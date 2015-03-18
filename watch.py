@@ -11,12 +11,11 @@ from watchdog.observers.polling import PollingObserver
 
 class EventHandler(FileSystemEventHandler):
     info = []
-    conn = sqlite3.connect('/home/pi/pimame/pimame-menu/database/config.db')
-    c = conn.cursor()
-    
     def on_any_event(self, event):
 
         if not event.is_directory:
+            self.conn = sqlite3.connect('/home/pi/pimame/pimame-menu/database/config.db')
+            self.c = self.conn.cursor()
             if event.event_type == 'created': 
                 self.info.append(self.c.execute('SELECT id FROM menu_items WHERE rom_path LIKE "{0}%"'.format(os.path.dirname(event.src_path))).fetchone()[0])
                 print 'new file found:', event.src_path
