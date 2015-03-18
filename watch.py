@@ -21,7 +21,7 @@ class EventHandler(FileSystemEventHandler):
                 self.info.append(self.c.execute('SELECT id FROM menu_items WHERE rom_path LIKE "{0}%"'.format(os.path.dirname(event.src_path))).fetchone()[0])
                 print 'new file found:', event.src_path
                 if event.event_type == 'deleted':
-                self.info.append(self.c.execute('SELECT id FROM menu_items WHERE rom_path LIKE "{0}%"'.format(os.path.dirname(event.src_path))).fetchone()[0])
+                    self.info.append(self.c.execute('SELECT id FROM menu_items WHERE rom_path LIKE "{0}%"'.format(os.path.dirname(event.src_path))).fetchone()[0])
                 print 'file deleted:', event.src_path
 	else: print
 
