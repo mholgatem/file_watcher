@@ -3,13 +3,19 @@ import time
 import os
 import logging
 import sqlite3
-from watchdog.observers import Observer, polling
+from watchdog.observers import Observer
 #from watchdog.events import LoggingEventHandler
-from watchdog.events import FileSystemEventHandler
-from watchdog.observers.polling import PollingObserver
+from watchdog.events import PatternMatchingEventHandler
+import argparse
+
+parser = argparse.ArgumentParser(description='PiScraper')
+parser.add_argument("-delay", default=60, metavar="60", help="How long to wait before running scraper", type=int)
+parser.add_argument("-path", default='.', metavar="/path/to/watch", help="folder to monitor", type=str)
+
+args = parser.parse_args()
 
 
-class EventHandler(FileSystemEventHandler):
+class EventHandler(PatternMatchingEventHandler):
     info = []
     def on_any_event(self, event):
 
@@ -25,14 +31,14 @@ class EventHandler(FileSystemEventHandler):
 	else: print
 
 if __name__ == "__main__":
-    path = sys.argv[1] if len(sys.argv) > 1 else '.'
-    event_handler = EventHandler()
+    path = args.path
+    event_handler = EventHandler(ignore_patterns=['*.jpg', '*.png', '*.gif', '*.gitkeep'], case_sensitive=False)
     observer = Observer()
     observer.schedule(event_handler, path, recursive=True)
     observer.start()
     try:
         while True:
-            time.sleep(60)
+            time.sleep(args.delay)
             if event_handler.info: os.system('python /home/pi/pimame/pimame-menu/scraper/scrape_script.py --platform {0}'.format(str(set(event_handler.info))[5:-2].replace(' ','')))
             event_handler.info = []
     except KeyboardInterrupt:
