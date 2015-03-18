@@ -9,8 +9,8 @@ from watchdog.events import PatternMatchingEventHandler
 import argparse
 
 parser = argparse.ArgumentParser(description='PiScraper')
-parser.add_argument("-delay", default=60, metavar="60", help="How long to wait before running scraper", type=int)
-parser.add_argument("-path", default='.', metavar="/path/to/watch", help="folder to monitor", type=str)
+parser.add_argument("--delay", default=60, metavar="60", help="How long to wait before running scraper", type=int)
+parser.add_argument("--path", default='.', metavar="/path/to/watch", help="folder to monitor", type=str)
 
 args = parser.parse_args()
 
