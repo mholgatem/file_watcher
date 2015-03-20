@@ -26,10 +26,14 @@ class EventHandler(PatternMatchingEventHandler):
 			self.c = self.conn.cursor()
 			self.modifying_files = True
 			if event.event_type == 'created':
-				self.info.append(self.c.execute('SELECT id FROM menu_items WHERE rom_path LIKE "{0}%"'.format(os.path.dirname(event.src_path))).fetchone()[0])
+				path = 'scummvm' if 'scummvm' in os.path.dirname(event.src_path) else os.path.dirname(event.src_path)
+				try: self.info.append(self.c.execute('SELECT id FROM menu_items WHERE rom_path LIKE "%{0}%"'.format(path)).fetchone()[0])
+				except TypeError: pass
 				if args.verbose: print 'new file found:', event.src_path
 			if event.event_type == 'deleted':
-				self.info.append(self.c.execute('SELECT id FROM menu_items WHERE rom_path LIKE "{0}%"'.format(os.path.dirname(event.src_path))).fetchone()[0])
+				path = 'scummvm' if 'scummvm' in os.path.dirname(event.src_path) else os.path.dirname(event.src_path)
+				try: self.info.append(self.c.execute('SELECT id FROM menu_items WHERE rom_path LIKE "%{0}%"'.format(path)).fetchone()[0])
+				except TypeError: pass
 				if args.verbose: print 'file deleted:', event.src_path
 
 if __name__ == "__main__":
@@ -44,7 +48,9 @@ if __name__ == "__main__":
 			if event_handler.modifying_files:
 				event_handler.modifying_files = False
 			else:
-				if event_handler.info: os.system('python /home/pi/pimame/pimame-menu/scraper/scrape_script.py --platform {0} --verbose {1}'.format(str(set(event_handler.info))[5:-2].replace(' ',''), args.verbose))
+				if event_handler.info: 
+					print 'python /home/pi/pimame/pimame-menu/scraper/scrape_script.py --platform {0} --verbose {1}'.format(str(set(event_handler.info))[5:-2].replace(' ',''), args.verbose)
+					#os.system('python /home/pi/pimame/pimame-menu/scraper/scrape_script.py --platform {0} --verbose {1}'.format(str(set(event_handler.info))[5:-2].replace(' ',''), args.verbose))
 				event_handler.info = []
 	except KeyboardInterrupt:
 		observer.stop()
