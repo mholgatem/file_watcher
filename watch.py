@@ -49,8 +49,7 @@ if __name__ == "__main__":
 				event_handler.modifying_files = False
 			else:
 				if event_handler.info: 
-					print 'python /home/pi/pimame/pimame-menu/scraper/scrape_script.py --platform {0} --verbose {1}'.format(str(set(event_handler.info))[5:-2].replace(' ',''), args.verbose)
-					#os.system('python /home/pi/pimame/pimame-menu/scraper/scrape_script.py --platform {0} --verbose {1}'.format(str(set(event_handler.info))[5:-2].replace(' ',''), args.verbose))
+					os.system('python /home/pi/pimame/pimame-menu/scraper/scrape_script.py --platform {0} --verbose {1}'.format(str(set(event_handler.info))[5:-2].replace(' ',''), args.verbose))
 				event_handler.info = []
 	except KeyboardInterrupt:
 		observer.stop()
