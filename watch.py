@@ -22,7 +22,7 @@ class EventHandler(PatternMatchingEventHandler):
 	def on_any_event(self, event):
 
 		if not event.is_directory:
-			self.conn = sqlite3.connect('/home/pi/pimame/pimame-menu/database/config.db')
+			self.conn = sqlite3.connect('/home/pi/pimame/pimame-menu/database/config.db', check_same_thread=False)
 			self.c = self.conn.cursor()
 			self.modifying_files = True
 			if event.event_type == 'created':
